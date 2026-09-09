@@ -19,14 +19,22 @@
     "show_summary": {"type": "boolean", "default": false},
     "layout": {
       "type": "string",
-      "enum": ["auto", "artwork_info", "full_artwork"],
-      "default": "auto"
+      "enum": ["auto", "marquee", "artwork_info", "full_artwork"],
+      "default": "auto",
+      "description": "Auto selects the ultra-wide marquee layout on very wide displays such as 320x32"
     },
     "artwork_mode": {
       "type": "string",
       "enum": ["auto", "poster", "background"],
       "default": "auto"
     },
+    "artwork_width": {"type": "integer", "default": 72, "minimum": 32, "maximum": 160, "description": "Artwork tile width in pixels for marquee layout"},
+    "accent_width": {"type": "integer", "default": 2, "minimum": 1, "maximum": 8, "description": "Width of the Plex-gold accent divider"},
+    "title_font_size": {"type": "integer", "default": 11, "minimum": 6, "maximum": 18},
+    "subtitle_font_size": {"type": "integer", "default": 7, "minimum": 5, "maximum": 12},
+    "heading_font_size": {"type": "integer", "default": 6, "minimum": 5, "maximum": 10},
+    "show_panel_dividers": {"type": "boolean", "default": false, "description": "Draw subtle vertical guides at physical panel boundaries"},
+    "panel_width": {"type": "integer", "default": 64, "minimum": 16, "maximum": 256, "description": "Physical panel width used for optional divider guides"},
     "recent_count": {"type": "integer", "default": 20, "minimum": 1, "maximum": 100},
     "live_priority": {"type": "boolean", "default": false, "description": "Allow active Plex playback to advertise live content priority when supported by LEDMatrix"}
   },
