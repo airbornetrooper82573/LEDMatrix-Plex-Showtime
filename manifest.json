@@ -1,10 +1,10 @@
 {
   "id": "plex-showtime",
   "name": "Plex Showtime",
-  "version": "1.4.1",
-  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts, granular media limits, duplicate suppression, and improved TV episode presentation.",
+  "version": "1.4.2",
+  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts, granular media limits, duplicate suppression, and reliable show/episode labeling for Recently Added TV.",
   "author": "airbornetrooper82573",
-  "entry_point": "manager_v6.py",
+  "entry_point": "manager_v7.py",
   "class_name": "PlexShowtimePlugin",
   "category": "media",
   "tags": ["plex", "media", "movies", "tv", "music", "marquee"],
@@ -13,6 +13,12 @@
   "config_schema": "config_schema.json",
   "compatible_versions": [">=2.0.0"],
   "versions": [
+    {
+      "version": "1.4.2",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Resolve Recently Added TV show/season containers to their newest episode so both series and episode names display reliably"
+    },
     {
       "version": "1.4.1",
       "released": "2026-09-09",
