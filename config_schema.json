@@ -20,6 +20,8 @@
     "recently_added_tv_shows_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV show/season items included in Recently Added. Set to 0 to exclude them from this source only."},
     "recently_added_tv_episodes_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV episodes/clips included in Recently Added. Set to 0 to exclude them from this source only."},
     "recently_added_music_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest music items included in Recently Added. Set to 0 to exclude music from this source only."},
+    "suppress_recent_episode_duplicates": {"type": "boolean", "default": true, "description": "Limit how many Recently Added episodes from the same TV show can enter the rotation pool."},
+    "recently_added_episodes_per_show": {"type": "integer", "default": 1, "minimum": 1, "maximum": 20, "description": "Maximum Recently Added episodes allowed per TV show when duplicate suppression is enabled."},
 
     "recently_played_movies_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of recently played movies included in the rotation pool. Set to 0 to exclude movies from Recently Played only."},
     "recently_played_tv_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of recently played TV items included in the rotation pool. Set to 0 to exclude TV from Recently Played only."},
