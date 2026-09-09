@@ -1,10 +1,10 @@
 {
   "id": "plex-showtime",
   "name": "Plex Showtime",
-  "version": "1.4.2",
-  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts, granular media limits, duplicate suppression, and reliable show/episode labeling for Recently Added TV.",
+  "version": "1.5.0",
+  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts, granular media limits, duplicate suppression, reliable TV episode labeling, and automatic scrolling for oversized titles.",
   "author": "airbornetrooper82573",
-  "entry_point": "manager_v7.py",
+  "entry_point": "manager_v8.py",
   "class_name": "PlexShowtimePlugin",
   "category": "media",
   "tags": ["plex", "media", "movies", "tv", "music", "marquee"],
@@ -13,59 +13,15 @@
   "config_schema": "config_schema.json",
   "compatible_versions": [">=2.0.0"],
   "versions": [
-    {
-      "version": "1.4.2",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Resolve Recently Added TV show/season containers to their newest episode so both series and episode names display reliably"
-    },
-    {
-      "version": "1.4.1",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Show both series name and episode title for Recently Added TV episodes"
-    },
-    {
-      "version": "1.4.0",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Add configurable show-level duplicate suppression for Recently Added episodes"
-    },
-    {
-      "version": "1.3.0",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Add separate Recently Added show/episode limits and independent Recently Played movie/TV/music limits"
-    },
-    {
-      "version": "1.2.0",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Add independent Recently Added limits for movies, TV, and music"
-    },
-    {
-      "version": "1.1.2",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Robust recursive Plex XML parsing, header-based authentication, and source diagnostics"
-    },
-    {
-      "version": "1.1.1",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Fix BasePlugin layout property collision that prevented plugin startup"
-    },
-    {
-      "version": "1.1.0",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Add ultra-wide 320x32 marquee layout and panel-aware display options"
-    },
-    {
-      "version": "1.0.0",
-      "released": "2026-09-09",
-      "ledmatrix_min": "2.0.0",
-      "notes": "Initial native Plex Showtime release"
-    }
+    {"version":"1.5.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Automatically scroll oversized media titles with configurable speed, pause, gap, and FPS"},
+    {"version":"1.4.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Resolve Recently Added TV show/season containers to their newest episode so both series and episode names display reliably"},
+    {"version":"1.4.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Show both series name and episode title for Recently Added TV episodes"},
+    {"version":"1.4.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add configurable show-level duplicate suppression for Recently Added episodes"},
+    {"version":"1.3.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add separate Recently Added show/episode limits and independent Recently Played movie/TV/music limits"},
+    {"version":"1.2.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add independent Recently Added limits for movies, TV, and music"},
+    {"version":"1.1.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Robust recursive Plex XML parsing, header-based authentication, and source diagnostics"},
+    {"version":"1.1.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Fix BasePlugin layout property collision that prevented plugin startup"},
+    {"version":"1.1.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add ultra-wide 320x32 marquee layout and panel-aware display options"},
+    {"version":"1.0.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Initial native Plex Showtime release"}
   ]
 }
