@@ -1,18 +1,24 @@
 {
   "id": "plex-showtime",
   "name": "Plex Showtime",
-  "version": "1.0.0",
-  "description": "Native Plex media display for LEDMatrix with Now Playing, Recently Added, Recently Played, and random library modes using Plex artwork.",
+  "version": "1.1.0",
+  "description": "Native Plex media display for LEDMatrix with Now Playing, Recently Added, Recently Played, random library modes, and an ultra-wide marquee layout for chained panels.",
   "author": "airbornetrooper82573",
   "entry_point": "manager.py",
   "class_name": "PlexShowtimePlugin",
   "category": "media",
-  "tags": ["plex", "media", "movies", "tv", "music"],
+  "tags": ["plex", "media", "movies", "tv", "music", "marquee"],
   "display_modes": ["plex-showtime"],
   "update_interval": 30,
   "config_schema": "config_schema.json",
   "compatible_versions": [">=2.0.0"],
   "versions": [
+    {
+      "version": "1.1.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Adds ultra-wide marquee layout optimized for five chained 64x32 panels, preserved artwork aspect ratio, and configurable typography"
+    },
     {
       "version": "1.0.0",
       "released": "2026-09-09",
