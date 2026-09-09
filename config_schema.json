@@ -17,11 +17,12 @@
 
     "recently_added_movies_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest movies included in Recently Added. Set to 0 to exclude movies from this source only."},
     "recently_added_tv_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Legacy TV limit retained for backward compatibility. Used as the default for show and episode limits when those are not set."},
-    "recently_added_tv_shows_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV show/season items included in Recently Added. Set to 0 to exclude them from this source only."},
-    "recently_added_tv_episodes_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV episodes/clips included in Recently Added. Set to 0 to exclude them from this source only."},
+    "recently_added_tv_shows_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV show/season entries included in Recently Added. These can be resolved to their newest episode for display."},
+    "recently_added_tv_episodes_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest direct TV episode/clip entries included in Recently Added."},
     "recently_added_music_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest music items included in Recently Added. Set to 0 to exclude music from this source only."},
     "suppress_recent_episode_duplicates": {"type": "boolean", "default": true, "description": "Limit how many Recently Added episodes from the same TV show can enter the rotation pool."},
     "recently_added_episodes_per_show": {"type": "integer", "default": 1, "minimum": 1, "maximum": 20, "description": "Maximum Recently Added episodes allowed per TV show when duplicate suppression is enabled."},
+    "resolve_recent_tv_to_episode": {"type": "boolean", "default": true, "description": "When Plex Recently Added returns a TV show or season container, resolve it to the newest episode so the display can show both the series and episode names."},
 
     "recently_played_movies_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of recently played movies included in the rotation pool. Set to 0 to exclude movies from Recently Played only."},
     "recently_played_tv_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of recently played TV items included in the rotation pool. Set to 0 to exclude TV from Recently Played only."},
