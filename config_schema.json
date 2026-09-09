@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Plex Showtime Configuration",
+  "properties": {
+    "enabled": {"type": "boolean", "default": true},
+    "display_duration": {"type": "number", "default": 20, "minimum": 1, "maximum": 300},
+    "plex_url": {"type": "string", "description": "Plex server URL, for example http://192.168.1.50:32400"},
+    "plex_token": {"type": "string", "description": "Plex authentication token (X-Plex-Token)"},
+    "show_playing": {"type": "boolean", "default": true},
+    "show_recently_added": {"type": "boolean", "default": true},
+    "show_recently_played": {"type": "boolean", "default": true},
+    "show_library": {"type": "boolean", "default": true},
+    "filter_movies": {"type": "boolean", "default": true},
+    "filter_tv": {"type": "boolean", "default": true},
+    "filter_music": {"type": "boolean", "default": false},
+    "show_heading": {"type": "boolean", "default": true},
+    "show_year": {"type": "boolean", "default": true},
+    "show_summary": {"type": "boolean", "default": false},
+    "layout": {
+      "type": "string",
+      "enum": ["auto", "artwork_info", "full_artwork"],
+      "default": "auto"
+    },
+    "artwork_mode": {
+      "type": "string",
+      "enum": ["auto", "poster", "background"],
+      "default": "auto"
+    },
+    "recent_count": {"type": "integer", "default": 20, "minimum": 1, "maximum": 100},
+    "live_priority": {"type": "boolean", "default": false, "description": "Allow active Plex playback to advertise live content priority when supported by LEDMatrix"}
+  },
+  "required": ["enabled", "plex_url", "plex_token"],
+  "additionalProperties": false
+}
