@@ -1,10 +1,10 @@
 {
   "id": "plex-showtime",
   "name": "Plex Showtime",
-  "version": "1.1.2",
-  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts for multi-panel displays.",
+  "version": "1.2.0",
+  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts and configurable Recently Added category limits.",
   "author": "airbornetrooper82573",
-  "entry_point": "manager_v2.py",
+  "entry_point": "manager_v3.py",
   "class_name": "PlexShowtimePlugin",
   "category": "media",
   "tags": ["plex", "media", "movies", "tv", "music", "marquee"],
@@ -13,6 +13,12 @@
   "config_schema": "config_schema.json",
   "compatible_versions": [">=2.0.0"],
   "versions": [
+    {
+      "version": "1.2.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add independent Recently Added limits for movies, TV, and music"
+    },
     {
       "version": "1.1.2",
       "released": "2026-09-09",
