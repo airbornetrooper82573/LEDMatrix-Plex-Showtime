@@ -1,9 +1,8 @@
 """Native Plex Showtime plugin for ChuckBuilds LEDMatrix.
 
-Inspired by Tronbyt's Plex Showtime app, but implemented directly against the
-LEDMatrix BasePlugin API. The plugin can show active Plex sessions, recently
-added media, recently played media, or a random library item using Plex-native
-artwork only.
+Optimized for ultra-wide LEDMatrix installations such as five chained 64x32
+panels (320x32). The plugin shows Plex playback, recently added, recently
+played, or random library media with artwork that preserves its aspect ratio.
 """
 
 from __future__ import annotations
@@ -48,10 +47,13 @@ class PlexItem:
         if self.media_type == "episode":
             bits = []
             if self.parent_index and self.index:
-                bits.append(f"S{int(self.parent_index):02d} E{int(self.index):02d}")
+                try:
+                    bits.append(f"S{int(self.parent_index):02d}E{int(self.index):02d}")
+                except ValueError:
+                    pass
             if self.title:
                 bits.append(self.title)
-            return " • ".join(bits)
+            return "  •  ".join(bits)
         if self.media_type in ("track", "album") and self.parent_title:
             return self.parent_title
         return self.year
@@ -80,6 +82,14 @@ class PlexShowtimePlugin(BasePlugin):
         self.recent_count = max(1, int(config.get("recent_count", 20)))
         self.live_priority = bool(config.get("live_priority", False))
 
+        self.artwork_width = max(32, int(config.get("artwork_width", 72)))
+        self.accent_width = max(1, int(config.get("accent_width", 2)))
+        self.show_panel_dividers = bool(config.get("show_panel_dividers", False))
+        self.panel_width = max(1, int(config.get("panel_width", 64)))
+        self.title_font_size = max(6, int(config.get("title_font_size", 11)))
+        self.subtitle_font_size = max(5, int(config.get("subtitle_font_size", 7)))
+        self.heading_font_size = max(5, int(config.get("heading_font_size", 6)))
+
         self.W = self.display_manager.width
         self.H = self.display_manager.height
         self.current_item: Optional[PlexItem] = None
@@ -87,11 +97,16 @@ class PlexShowtimePlugin(BasePlugin):
         self.last_update = 0.0
         self.last_error = ""
 
-        self._font_small = self._load_font(max(5, min(8, self.H // 4)))
-        self._font_medium = self._load_font(max(6, min(11, self.H // 3)))
-        self._font_large = self._load_font(max(7, min(14, self.H // 2)))
+        self._font_heading = self._load_font(self.heading_font_size)
+        self._font_subtitle = self._load_font(self.subtitle_font_size)
+        self._font_title = self._load_font(self.title_font_size)
 
-        self.logger.info("Plex Showtime initialized for %dx%d", self.W, self.H)
+        self.logger.info(
+            "Plex Showtime initialized for %dx%d (ultra-wide=%s)",
+            self.W,
+            self.H,
+            self.W >= self.H * 5,
+        )
 
     def _load_font(self, size: int):
         candidates = [
@@ -112,7 +127,9 @@ class PlexShowtimePlugin(BasePlugin):
         separator = "&" if "?" in path else "?"
         url = f"{self.plex_url}{path}{separator}X-Plex-Token={urllib.parse.quote(self.plex_token)}"
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "LEDMatrix-Plex-Showtime/1.0"})
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "LEDMatrix-Plex-Showtime/1.1"}
+            )
             with urllib.request.urlopen(req, timeout=8) as response:
                 return ET.fromstring(response.read())
         except Exception as exc:
@@ -165,19 +182,21 @@ class PlexShowtimePlugin(BasePlugin):
     def _playing_items(self) -> List[PlexItem]:
         if not self.show_playing:
             return []
-        return self._items_from_root(self._plex_xml("/status/sessions"), "Playing")
+        return self._items_from_root(self._plex_xml("/status/sessions"), "NOW PLAYING")
 
     def _recently_added_items(self) -> List[PlexItem]:
         if not self.show_recently_added:
             return []
-        return self._items_from_root(self._plex_xml("/library/recentlyAdded"), "Recently Added")
+        return self._items_from_root(
+            self._plex_xml("/library/recentlyAdded"), "RECENTLY ADDED"
+        )
 
     def _recently_played_items(self) -> List[PlexItem]:
         if not self.show_recently_played:
             return []
         return self._items_from_root(
             self._plex_xml("/status/sessions/history/all?sort=viewedAt:desc"),
-            "Recently Played",
+            "RECENTLY PLAYED",
         )
 
     def _library_items(self) -> List[PlexItem]:
@@ -204,7 +223,7 @@ class PlexShowtimePlugin(BasePlugin):
             path = f"/library/sections/{key}/all"
             if section_type == "show":
                 path += "?type=4"
-            items = self._items_from_root(self._plex_xml(path), "Library")
+            items = self._items_from_root(self._plex_xml(path), "FROM YOUR LIBRARY")
             if items:
                 return items
         return []
@@ -234,6 +253,8 @@ class PlexShowtimePlugin(BasePlugin):
             return item.thumb or item.art
         if self.artwork_mode == "background":
             return item.art or item.thumb
+        if self.W >= self.H * 5:
+            return item.thumb or item.art
         if self.show_summary:
             return item.thumb or item.art
         return item.art or item.thumb
@@ -242,16 +263,16 @@ class PlexShowtimePlugin(BasePlugin):
         path = self._image_path_for_item(item)
         if not path:
             return None
-        if path.startswith("http://") or path.startswith("https://"):
+        if path.startswith(("http://", "https://")):
             url = path
-            separator = "&" if "?" in url else "?"
-            url += f"{separator}X-Plex-Token={urllib.parse.quote(self.plex_token)}"
         else:
             url = f"{self.plex_url}{path}"
-            separator = "&" if "?" in url else "?"
-            url += f"{separator}X-Plex-Token={urllib.parse.quote(self.plex_token)}"
+        separator = "&" if "?" in url else "?"
+        url += f"{separator}X-Plex-Token={urllib.parse.quote(self.plex_token)}"
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "LEDMatrix-Plex-Showtime/1.0"})
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "LEDMatrix-Plex-Showtime/1.1"}
+            )
             with urllib.request.urlopen(req, timeout=10) as response:
                 return Image.open(io.BytesIO(response.read())).convert("RGB")
         except Exception as exc:
@@ -268,7 +289,9 @@ class PlexShowtimePlugin(BasePlugin):
 
         try:
             self.current_item = self._choose_item()
-            self.current_image = self._load_plex_image(self.current_item) if self.current_item else None
+            self.current_image = (
+                self._load_plex_image(self.current_item) if self.current_item else None
+            )
             if self.current_item:
                 self.last_error = ""
         except Exception as exc:
@@ -283,38 +306,114 @@ class PlexShowtimePlugin(BasePlugin):
         return bool(self._playing_items())
 
     @staticmethod
-    def _fit_text(draw: ImageDraw.ImageDraw, text: str, font, width: int) -> str:
+    def _text_width(draw: ImageDraw.ImageDraw, text: str, font) -> int:
+        box = draw.textbbox((0, 0), text, font=font)
+        return max(0, box[2] - box[0])
+
+    @classmethod
+    def _fit_text(cls, draw: ImageDraw.ImageDraw, text: str, font, width: int) -> str:
         text = text.strip()
         if not text:
             return ""
-        if draw.textbbox((0, 0), text, font=font)[2] <= width:
+        if cls._text_width(draw, text, font) <= width:
             return text
-        while text and draw.textbbox((0, 0), text + "…", font=font)[2] > width:
+        suffix = "..."
+        while text and cls._text_width(draw, text + suffix, font) > width:
             text = text[:-1]
-        return text.rstrip() + "…" if text else ""
+        return text.rstrip() + suffix if text else ""
 
     @staticmethod
     def _cover(image: Image.Image, size) -> Image.Image:
-        return ImageOps.fit(image, size, method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
+        return ImageOps.fit(
+            image,
+            size,
+            method=Image.Resampling.LANCZOS,
+            centering=(0.5, 0.5),
+        )
 
     @staticmethod
     def _contain(image: Image.Image, size) -> Image.Image:
         canvas = Image.new("RGB", size, "black")
         copy = image.copy()
         copy.thumbnail(size, Image.Resampling.LANCZOS)
-        canvas.paste(copy, ((size[0] - copy.width) // 2, (size[1] - copy.height) // 2))
+        canvas.paste(
+            copy,
+            ((size[0] - copy.width) // 2, (size[1] - copy.height) // 2),
+        )
         return canvas
 
-    def _render(self) -> Image.Image:
+    def _draw_panel_dividers(self, draw: ImageDraw.ImageDraw):
+        if not self.show_panel_dividers or self.panel_width <= 0:
+            return
+        for x in range(self.panel_width, self.W, self.panel_width):
+            draw.line((x, 0, x, self.H - 1), fill=(20, 20, 20))
+
+    def _render_ultrawide(self, item: PlexItem) -> Image.Image:
         canvas = Image.new("RGB", (self.W, self.H), "black")
         draw = ImageDraw.Draw(canvas)
-        item = self.current_item
 
-        if item is None:
-            msg = self.last_error or "No Plex media found"
-            draw.text((2, max(0, self.H // 2 - 4)), self._fit_text(draw, msg, self._font_small, self.W - 4), font=self._font_small, fill="white")
-            return canvas
+        art_w = min(max(self.H, self.artwork_width), max(self.H, self.W // 3))
+        art_w = min(art_w, max(self.H, self.W - 120))
 
+        if self.current_image:
+            if self.current_image.height >= self.current_image.width:
+                art = self._contain(self.current_image, (art_w, self.H))
+            else:
+                art = self._cover(self.current_image, (art_w, self.H))
+            canvas.paste(art, (0, 0))
+
+        accent_x = art_w
+        draw.rectangle(
+            (accent_x, 0, min(self.W - 1, accent_x + self.accent_width - 1), self.H - 1),
+            fill=(229, 160, 13),
+        )
+
+        text_x = art_w + self.accent_width + 6
+        text_w = max(1, self.W - text_x - 5)
+        y = 1
+
+        if self.show_heading:
+            heading = self._fit_text(draw, item.source, self._font_heading, text_w)
+            draw.text((text_x, y), heading, font=self._font_heading, fill=(229, 160, 13))
+            y += self.heading_font_size + 2
+
+        title = self._fit_text(draw, item.display_title, self._font_title, text_w)
+        draw.text((text_x, y), title, font=self._font_title, fill=(255, 255, 255))
+        y += self.title_font_size + 2
+
+        subtitle_parts = []
+        if item.media_type:
+            labels = {
+                "movie": "MOVIE",
+                "show": "TV",
+                "season": "TV",
+                "episode": "TV",
+                "artist": "MUSIC",
+                "album": "MUSIC",
+                "track": "MUSIC",
+            }
+            subtitle_parts.append(labels.get(item.media_type, item.media_type.upper()))
+        if item.subtitle:
+            subtitle_parts.append(item.subtitle)
+        elif self.show_year and item.year:
+            subtitle_parts.append(item.year)
+
+        subtitle = "   |   ".join(p for p in subtitle_parts if p)
+        if subtitle and y <= self.H - self.subtitle_font_size:
+            subtitle = self._fit_text(draw, subtitle, self._font_subtitle, text_w)
+            draw.text(
+                (text_x, y),
+                subtitle,
+                font=self._font_subtitle,
+                fill=(170, 170, 170),
+            )
+
+        self._draw_panel_dividers(draw)
+        return canvas
+
+    def _render_standard(self, item: PlexItem) -> Image.Image:
+        canvas = Image.new("RGB", (self.W, self.H), "black")
+        draw = ImageDraw.Draw(canvas)
         layout = self.layout
         if layout == "auto":
             layout = "artwork_info" if self.W >= self.H * 2 else "full_artwork"
@@ -326,9 +425,19 @@ class PlexShowtimePlugin(BasePlugin):
             draw.rectangle((0, self.H - overlay_h, self.W, self.H), fill=(0, 0, 0))
             y = self.H - overlay_h + 1
             if self.show_heading:
-                draw.text((2, y), self._fit_text(draw, item.source.upper(), self._font_small, self.W - 4), font=self._font_small, fill=(255, 170, 0))
-                y += self._font_small.size + 1 if hasattr(self._font_small, "size") else 7
-            draw.text((2, y), self._fit_text(draw, item.display_title, self._font_medium, self.W - 4), font=self._font_medium, fill="white")
+                draw.text(
+                    (2, y),
+                    self._fit_text(draw, item.source, self._font_heading, self.W - 4),
+                    font=self._font_heading,
+                    fill=(229, 160, 13),
+                )
+                y += self.heading_font_size + 1
+            draw.text(
+                (2, y),
+                self._fit_text(draw, item.display_title, self._font_title, self.W - 4),
+                font=self._font_title,
+                fill="white",
+            )
             return canvas
 
         art_w = max(1, min(self.H, self.W // 3))
@@ -339,39 +448,54 @@ class PlexShowtimePlugin(BasePlugin):
         y = 2
 
         if self.show_heading:
-            draw.text((text_x, y), self._fit_text(draw, item.source.upper(), self._font_small, text_w), font=self._font_small, fill=(255, 170, 0))
-            y += (self._font_small.size if hasattr(self._font_small, "size") else 6) + 2
+            draw.text(
+                (text_x, y),
+                self._fit_text(draw, item.source, self._font_heading, text_w),
+                font=self._font_heading,
+                fill=(229, 160, 13),
+            )
+            y += self.heading_font_size + 2
 
-        draw.text((text_x, y), self._fit_text(draw, item.display_title, self._font_medium, text_w), font=self._font_medium, fill="white")
-        y += (self._font_medium.size if hasattr(self._font_medium, "size") else 8) + 2
+        draw.text(
+            (text_x, y),
+            self._fit_text(draw, item.display_title, self._font_title, text_w),
+            font=self._font_title,
+            fill="white",
+        )
+        y += self.title_font_size + 2
 
-        subtitle = item.subtitle if self.show_year else (item.subtitle if item.media_type == "episode" else "")
-        if subtitle:
-            draw.text((text_x, y), self._fit_text(draw, subtitle, self._font_small, text_w), font=self._font_small, fill=(190, 190, 190))
-            y += (self._font_small.size if hasattr(self._font_small, "size") else 6) + 2
-
-        if self.show_summary and item.summary and y < self.H - 4:
-            words = item.summary.split()
-            line = ""
-            max_lines = max(1, (self.H - y) // 7)
-            lines = []
-            for word in words:
-                candidate = f"{line} {word}".strip()
-                if draw.textbbox((0, 0), candidate, font=self._font_small)[2] <= text_w:
-                    line = candidate
-                else:
-                    if line:
-                        lines.append(line)
-                    line = word
-                if len(lines) >= max_lines:
-                    break
-            if line and len(lines) < max_lines:
-                lines.append(line)
-            for line in lines[:max_lines]:
-                draw.text((text_x, y), line, font=self._font_small, fill=(205, 205, 205))
-                y += 7
-
+        subtitle = item.subtitle if self.show_year else (
+            item.subtitle if item.media_type == "episode" else ""
+        )
+        if subtitle and y < self.H:
+            draw.text(
+                (text_x, y),
+                self._fit_text(draw, subtitle, self._font_subtitle, text_w),
+                font=self._font_subtitle,
+                fill=(190, 190, 190),
+            )
         return canvas
+
+    def _render(self) -> Image.Image:
+        canvas = Image.new("RGB", (self.W, self.H), "black")
+        draw = ImageDraw.Draw(canvas)
+        item = self.current_item
+
+        if item is None:
+            msg = self.last_error or "No Plex media found"
+            draw.text(
+                (2, max(0, self.H // 2 - 4)),
+                self._fit_text(draw, msg, self._font_subtitle, self.W - 4),
+                font=self._font_subtitle,
+                fill="white",
+            )
+            return canvas
+
+        if self.layout == "marquee" or (
+            self.layout == "auto" and self.W >= self.H * 5
+        ):
+            return self._render_ultrawide(item)
+        return self._render_standard(item)
 
     def display(self, force_clear=False):
         try:
@@ -388,20 +512,36 @@ class PlexShowtimePlugin(BasePlugin):
     def validate_config(self):
         if not super().validate_config():
             return False
-        if self.config.get("layout", "auto") not in ("auto", "artwork_info", "full_artwork"):
-            self.logger.error("layout must be auto, artwork_info, or full_artwork")
+        if self.config.get("layout", "auto") not in (
+            "auto",
+            "marquee",
+            "artwork_info",
+            "full_artwork",
+        ):
+            self.logger.error(
+                "layout must be auto, marquee, artwork_info, or full_artwork"
+            )
             return False
-        if self.config.get("artwork_mode", "auto") not in ("auto", "poster", "background"):
+        if self.config.get("artwork_mode", "auto") not in (
+            "auto",
+            "poster",
+            "background",
+        ):
             self.logger.error("artwork_mode must be auto, poster, or background")
             return False
         return True
 
     def get_info(self):
         info = super().get_info()
-        info.update({
-            "last_update": self.last_update,
-            "last_error": self.last_error,
-            "current_title": self.current_item.display_title if self.current_item else "",
-            "current_source": self.current_item.source if self.current_item else "",
-        })
+        info.update(
+            {
+                "last_update": self.last_update,
+                "last_error": self.last_error,
+                "current_title": (
+                    self.current_item.display_title if self.current_item else ""
+                ),
+                "current_source": self.current_item.source if self.current_item else "",
+                "display_size": f"{self.W}x{self.H}",
+            }
+        )
         return info
