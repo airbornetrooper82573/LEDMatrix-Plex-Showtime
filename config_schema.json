@@ -14,9 +14,17 @@
     "filter_movies": {"type": "boolean", "default": true},
     "filter_tv": {"type": "boolean", "default": true},
     "filter_music": {"type": "boolean", "default": false},
-    "recently_added_movies_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest movies included in the Recently Added rotation pool. Set to 0 to exclude movies from Recently Added only."},
-    "recently_added_tv_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV items included in the Recently Added rotation pool. Set to 0 to exclude TV from Recently Added only."},
-    "recently_added_music_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest music items included in the Recently Added rotation pool. Set to 0 to exclude music from Recently Added only."},
+
+    "recently_added_movies_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest movies included in Recently Added. Set to 0 to exclude movies from this source only."},
+    "recently_added_tv_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Legacy TV limit retained for backward compatibility. Used as the default for show and episode limits when those are not set."},
+    "recently_added_tv_shows_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV show/season items included in Recently Added. Set to 0 to exclude them from this source only."},
+    "recently_added_tv_episodes_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest TV episodes/clips included in Recently Added. Set to 0 to exclude them from this source only."},
+    "recently_added_music_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of newest music items included in Recently Added. Set to 0 to exclude music from this source only."},
+
+    "recently_played_movies_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of recently played movies included in the rotation pool. Set to 0 to exclude movies from Recently Played only."},
+    "recently_played_tv_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of recently played TV items included in the rotation pool. Set to 0 to exclude TV from Recently Played only."},
+    "recently_played_music_limit": {"type": "integer", "default": 10, "minimum": 0, "maximum": 100, "description": "Maximum number of recently played music items included in the rotation pool. Set to 0 to exclude music from Recently Played only."},
+
     "show_heading": {"type": "boolean", "default": true},
     "show_year": {"type": "boolean", "default": true},
     "show_summary": {"type": "boolean", "default": false},
@@ -38,7 +46,7 @@
     "heading_font_size": {"type": "integer", "default": 6, "minimum": 5, "maximum": 10},
     "show_panel_dividers": {"type": "boolean", "default": false, "description": "Draw subtle vertical guides at physical panel boundaries"},
     "panel_width": {"type": "integer", "default": 64, "minimum": 16, "maximum": 256, "description": "Physical panel width used for optional divider guides"},
-    "recent_count": {"type": "integer", "default": 20, "minimum": 1, "maximum": 100, "description": "General item limit used for Recently Played and library queries"},
+    "recent_count": {"type": "integer", "default": 20, "minimum": 1, "maximum": 100, "description": "General item limit used by library and other uncategorized queries"},
     "live_priority": {"type": "boolean", "default": false, "description": "Allow active Plex playback to advertise live content priority when supported by LEDMatrix"}
   },
   "required": ["enabled", "plex_url", "plex_token"],
