@@ -1,10 +1,10 @@
 {
   "id": "plex-showtime",
   "name": "Plex Showtime",
-  "version": "1.6.0",
-  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts, granular media limits, duplicate suppression, reliable TV episode labeling, and independent scrolling for long titles and episode lines.",
+  "version": "1.6.1",
+  "description": "Native Plex media display for LEDMatrix with ultra-wide marquee layouts, granular media limits, duplicate suppression, reliable TV episode labeling, and native scroll-state integration.",
   "author": "airbornetrooper82573",
-  "entry_point": "manager_v12.py",
+  "entry_point": "manager_v13.py",
   "class_name": "PlexShowtimePlugin",
   "category": "media",
   "tags": ["plex", "media", "movies", "tv", "music", "marquee"],
@@ -13,6 +13,7 @@
   "config_schema": "config_schema.json",
   "compatible_versions": [">=2.0.0"],
   "versions": [
+    {"version":"1.6.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Integrate with LEDMatrix scrolling state, add configurable 85% scroll trigger threshold, and log measured text widths"},
     {"version":"1.6.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add independent scrolling for long TV show and episode-name rows; fix subtitle clipping using measured font bounds"},
     {"version":"1.5.3","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Query TV library sections directly for real episode objects sorted by addedAt so Recently Added reliably displays both show and episode names"},
     {"version":"1.5.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Use canonical ratingKey metadata paths for Recently Added TV, try multiple episode endpoints, and skip unresolved season containers instead of displaying Season N"},
