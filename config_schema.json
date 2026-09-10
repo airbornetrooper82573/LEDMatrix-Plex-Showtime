@@ -8,6 +8,7 @@
     "plex_url": {"type": "string", "description": "Plex server URL, for example http://192.168.1.50:32400"},
     "plex_token": {"type": "string", "description": "Plex authentication token (X-Plex-Token)"},
     "show_playing": {"type": "boolean", "default": true},
+    "now_playing_users": {"type": "array", "items": {"type": "string", "minLength": 1}, "default": [], "uniqueItems": true, "description": "Optional allowlist for Now Playing. Enter Plex user display names/usernames or user IDs. Empty means all users are allowed."},
     "show_recently_added": {"type": "boolean", "default": true},
     "show_recently_played": {"type": "boolean", "default": true},
     "show_library": {"type": "boolean", "default": true},
