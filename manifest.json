@@ -1,10 +1,10 @@
 {
   "id": "plex-showtime",
   "name": "Plex Showtime",
-  "version": "1.7.0",
-  "description": "Native Plex media display for LEDMatrix with reliable TV episode metadata, measured text layout, and persistent scrolling sessions for long movie, show, and episode text.",
+  "version": "1.8.0",
+  "description": "Native Plex media display for LEDMatrix with reliable TV episode metadata, persistent scrolling, and optional Now Playing user filtering.",
   "author": "airbornetrooper82573",
-  "entry_point": "manager_v15.py",
+  "entry_point": "manager_v16.py",
   "class_name": "PlexShowtimePlugin",
   "category": "media",
   "tags": ["plex", "media", "movies", "tv", "music", "marquee"],
@@ -13,6 +13,7 @@
   "config_schema": "config_schema.json",
   "compatible_versions": [">=2.0.0"],
   "versions": [
+    {"version":"1.8.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add optional case-insensitive Now Playing user allowlist using Plex session User metadata"},
     {"version":"1.7.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Fix scrolling lifecycle under LEDMatrix repeated display dispatches by keeping one persistent animation session per displayed item"},
     {"version":"1.6.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Use an independent TV episode scroll trigger and measured font geometry for movie/media rows to prevent subtitle clipping"},
     {"version":"1.6.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Integrate with LEDMatrix scrolling state, add configurable 85% scroll trigger threshold, and log measured text widths"},
