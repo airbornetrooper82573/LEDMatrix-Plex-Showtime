@@ -1,36 +1,148 @@
 {
   "id": "plex-showtime",
   "name": "Plex Showtime",
-  "version": "1.9.0",
-  "description": "Native Plex media display for LEDMatrix with reliable TV episode metadata, persistent scrolling, per-user Now Playing filtering, balanced rotation, richer TV artwork, and optional Now Playing user labels.",
+  "version": "1.9.1",
+  "description": "Native Plex media display for LEDMatrix with full scrolling movie and TV titles, independently scrolling episode names, balanced rotation, series artwork, and Now Playing user filtering.",
   "author": "airbornetrooper82573",
-  "entry_point": "manager_v17.py",
+  "entry_point": "manager_v18.py",
   "class_name": "PlexShowtimePlugin",
   "category": "media",
-  "tags": ["plex", "media", "movies", "tv", "music", "marquee"],
-  "display_modes": ["plex-showtime"],
+  "tags": [
+    "plex",
+    "media",
+    "movies",
+    "tv",
+    "music",
+    "marquee"
+  ],
+  "display_modes": [
+    "plex-showtime"
+  ],
   "update_interval": 30,
   "config_schema": "config_schema.json",
-  "compatible_versions": [">=2.0.0"],
+  "compatible_versions": [
+    ">=2.0.0"
+  ],
   "versions": [
-    {"version":"1.9.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add balanced source/category rotation, prefer series-level TV artwork, and optionally show the Plex user on Now Playing"},
-    {"version":"1.8.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add optional case-insensitive Now Playing user allowlist using Plex session User metadata"},
-    {"version":"1.7.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Fix scrolling lifecycle under LEDMatrix repeated display dispatches by keeping one persistent animation session per displayed item"},
-    {"version":"1.6.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Use an independent TV episode scroll trigger and measured font geometry for movie/media rows to prevent subtitle clipping"},
-    {"version":"1.6.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Integrate with LEDMatrix scrolling state, add configurable 85% scroll trigger threshold, and log measured text widths"},
-    {"version":"1.6.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add independent scrolling for long TV show and episode-name rows; fix subtitle clipping using measured font bounds"},
-    {"version":"1.5.3","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Query TV library sections directly for real episode objects sorted by addedAt so Recently Added reliably displays both show and episode names"},
-    {"version":"1.5.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Use canonical ratingKey metadata paths for Recently Added TV, try multiple episode endpoints, and skip unresolved season containers instead of displaying Season N"},
-    {"version":"1.5.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Fix Plex show/season key normalization so Recently Added TV resolves to the newest episode and retains the series name"},
-    {"version":"1.5.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Automatically scroll oversized media titles with configurable speed, pause, gap, and FPS"},
-    {"version":"1.4.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Resolve Recently Added TV show/season containers to their newest episode so both series and episode names display reliably"},
-    {"version":"1.4.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Show both series name and episode title for Recently Added TV episodes"},
-    {"version":"1.4.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add configurable show-level duplicate suppression for Recently Added episodes"},
-    {"version":"1.3.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add separate Recently Added show/episode limits and independent Recently Played movie/TV/music limits"},
-    {"version":"1.2.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add independent Recently Added limits for movies, TV, and music"},
-    {"version":"1.1.2","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Robust recursive Plex XML parsing, header-based authentication, and source diagnostics"},
-    {"version":"1.1.1","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Fix BasePlugin layout property collision that prevented plugin startup"},
-    {"version":"1.1.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Add ultra-wide 320x32 marquee layout and panel-aware display options"},
-    {"version":"1.0.0","released":"2026-09-09","ledmatrix_min":"2.0.0","notes":"Initial native Plex Showtime release"}
+    {
+      "version": "1.9.1",
+      "released": "2026-10-31",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Use active manager_v18 to keep full long movie/show and episode scrolling rather than ellipses; bypass core scroll-state mode that distorted physical panels."
+    },
+    {
+      "version": "1.9.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add balanced source/category rotation, prefer series-level TV artwork, and optionally show the Plex user on Now Playing"
+    },
+    {
+      "version": "1.8.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add optional case-insensitive Now Playing user allowlist using Plex session User metadata"
+    },
+    {
+      "version": "1.7.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Fix scrolling lifecycle under LEDMatrix repeated display dispatches by keeping one persistent animation session per displayed item"
+    },
+    {
+      "version": "1.6.2",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Use an independent TV episode scroll trigger and measured font geometry for movie/media rows to prevent subtitle clipping"
+    },
+    {
+      "version": "1.6.1",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Integrate with LEDMatrix scrolling state, add configurable 85% scroll trigger threshold, and log measured text widths"
+    },
+    {
+      "version": "1.6.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add independent scrolling for long TV show and episode-name rows; fix subtitle clipping using measured font bounds"
+    },
+    {
+      "version": "1.5.3",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Query TV library sections directly for real episode objects sorted by addedAt so Recently Added reliably displays both show and episode names"
+    },
+    {
+      "version": "1.5.2",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Use canonical ratingKey metadata paths for Recently Added TV, try multiple episode endpoints, and skip unresolved season containers instead of displaying Season N"
+    },
+    {
+      "version": "1.5.1",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Fix Plex show/season key normalization so Recently Added TV resolves to the newest episode and retains the series name"
+    },
+    {
+      "version": "1.5.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Automatically scroll oversized media titles with configurable speed, pause, gap, and FPS"
+    },
+    {
+      "version": "1.4.2",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Resolve Recently Added TV show/season containers to their newest episode so both series and episode names display reliably"
+    },
+    {
+      "version": "1.4.1",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Show both series name and episode title for Recently Added TV episodes"
+    },
+    {
+      "version": "1.4.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add configurable show-level duplicate suppression for Recently Added episodes"
+    },
+    {
+      "version": "1.3.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add separate Recently Added show/episode limits and independent Recently Played movie/TV/music limits"
+    },
+    {
+      "version": "1.2.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add independent Recently Added limits for movies, TV, and music"
+    },
+    {
+      "version": "1.1.2",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Robust recursive Plex XML parsing, header-based authentication, and source diagnostics"
+    },
+    {
+      "version": "1.1.1",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Fix BasePlugin layout property collision that prevented plugin startup"
+    },
+    {
+      "version": "1.1.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Add ultra-wide 320x32 marquee layout and panel-aware display options"
+    },
+    {
+      "version": "1.0.0",
+      "released": "2026-09-09",
+      "ledmatrix_min": "2.0.0",
+      "notes": "Initial native Plex Showtime release"
+    }
   ]
 }
