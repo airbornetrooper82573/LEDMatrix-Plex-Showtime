@@ -4,6 +4,9 @@ Native Plex media display plugin for [ChuckBuilds/LEDMatrix](https://github.com/
 
 ## Features
 
+- Full horizontal scrolling for long movie, series, and TV episode text instead of ellipses (active v1.9.1 renderer)
+- Uses the hardware-tested scrolling approach that does not activate LEDMatrix's special scrolling-state mode
+
 - Now Playing from `/status/sessions`
 - Recently Added from `/library/recentlyAdded`
 - Recently Played from Plex history
@@ -92,6 +95,15 @@ You need the `X-Plex-Token` for your Plex account/server. Do not commit your rea
 - A reachable Plex Media Server
 - Plex token
 - Pillow
+
+## Change notes
+
+### 1.9.1 — 2026-10-31
+- Active entry point changed to `manager_v18.py` (the older `manager.py` is legacy and truncates text).
+- Preserve existing full scrolling for long movie/show titles and independent TV episode-name scrolling using the persistent v1.7 session lifecycle.
+- Avoid enabling LEDMatrix core scrolling-state mode, which caused text corruption on the user's five-panel P5 setup in the Home Assistant plugin; keep Plex's native time-based pixel offsets.
+- Preserve v1.9.0 balanced rotation, artwork preferences, Now Playing user filtering, and display configuration.
+- Physical playback test is required; the old `manager.py` is not the active runtime entry point.
 
 ## Initial Release Notes
 
